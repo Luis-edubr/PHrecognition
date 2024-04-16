@@ -4,7 +4,7 @@ def test_connection():
     try:
         # Estabelece a conexão com o banco de dados
         conn = psycopg2.connect(
-            dbname='propriedades',
+            dbname='images_for_ph',
             user='postgres',
             password='12345',
             host='localhost',
