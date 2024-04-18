@@ -15,7 +15,7 @@ def test_connection():
     except psycopg2.Error as e:
         # Se ocorrer um erro, imprime o erro e retorna False
         print("Erro ao conectar ao banco de dados:", e)
-        return none
+        return None
 
 # exemplo de consulta 
 

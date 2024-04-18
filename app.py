@@ -1,6 +1,6 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from db.connect_to_db import test_connection
-from utils.receive_image import save_img_to_db
+from utils.find_testtube import find_testtube
 from utils.delete_temp_img import delete_temp_image
 from werkzeug.utils import secure_filename
 import os
@@ -30,21 +30,34 @@ def validate_db_conn():
 
 @app.route('/db/create_image', methods=['POST'])
 def upload_image():
-    conn = test_connection()
-    if not conn:
-        return 'Falha ao conectar ao banco de dados', 500
     if 'file' not in request.files:
-        return 'Sem arquivos enviados'
+        return jsonify({'error': 'Sem arquivos enviados'})
+    
     file = request.files['file']
+    
     if file.filename == '':
-        return 'Nenhuma imagem selecionada'
+        return jsonify({'error': 'Nenhuma imagem selecionada'})
+    
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        result = save_img_to_db(file, conn)
-        if 'sucesso' in result.lower():
-            delete_temp_image(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return result
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        
+        # Encontrar as imagens correspondentes ao teste
+        images = find_testtube(file_path)
+        
+        # Excluir a imagem temporária
+        #if 'sucesso' in images:
+        #
+        #     delete_temp_image(file_path)
+        
+        # Preparar os dados de resposta
+        #response_data = {'success': 'Imagem carregada com sucesso',
+        #                'images': [{'result': res.tolist(), 'original': img.tolist()} for res, img in images]}
+        
+        return jsonify(images)
+    
     else:
-        return 'Allowed image types are - png, jpg, jpeg, gif'
+        return jsonify({'error': 'Tipos de imagem permitidos são - png, jpg, jpeg, gif'})
+
 
