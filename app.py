@@ -47,15 +47,15 @@ def upload_image():
         images = find_testtube(file_path)
         
         # Excluir a imagem temporária
-        #if 'sucesso' in images:
-        #
-        #     delete_temp_image(file_path)
+        if 'sucesso' in images:
         
-        # Preparar os dados de resposta
-        #response_data = {'success': 'Imagem carregada com sucesso',
-        #                'images': [{'result': res.tolist(), 'original': img.tolist()} for res, img in images]}
+             delete_temp_image(file_path)
         
-        return jsonify(images)
+        #Preparar os dados de resposta
+        response_data = {'success': 'Imagem carregada com sucesso',
+                        'images': [{'result': res.tolist(), 'original': img.tolist()} for res, img in images]}
+        
+        return jsonify(response_data)
     
     else:
         return jsonify({'error': 'Tipos de imagem permitidos são - png, jpg, jpeg, gif'})
