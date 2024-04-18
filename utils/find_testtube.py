@@ -8,9 +8,7 @@ def find_testtube(arquivo):
     template = cv.imread('temp_images/template.jpg', cv.IMREAD_COLOR)
     assert template is not None, "file could not be read, check with os.path.exists() 2"
     return template.shape
-    """
-    w, h = template.shape[::-1]
-    
+    w, h, c = template.shape[::-1]
     # Lista para armazenar as imagens geradas pela comparação
     images = []
 
@@ -40,4 +38,3 @@ def find_testtube(arquivo):
     
     # Retornar a lista de imagens
     return images
-"""
