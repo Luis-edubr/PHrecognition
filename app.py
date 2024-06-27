@@ -4,6 +4,8 @@ from utils.find_testtube import find_testtube
 from utils.delete_temp_img import delete_temp_image
 from werkzeug.utils import secure_filename
 import os
+import base64
+import cv2
 
 app = Flask(__name__)
 
@@ -45,19 +47,23 @@ def upload_image():
         
         # Encontrar as imagens correspondentes ao teste
         images = find_testtube(file_path)
+            
+        # Converter as imagens para base64
+        base64_images = []
+        for result, original in images:
+            # Converter imagens para base64
+            _, buffer = cv2.imencode('.jpg', original)
+            base64_image = base64.b64encode(buffer).decode('utf-8')
+            base64_images.append(base64_image)
         
         # Excluir a imagem temporária
-        if 'sucesso' in images:
+        delete_temp_image(file_path)
         
-             delete_temp_image(file_path)
-        
-        #Preparar os dados de resposta
+        # Preparar os dados de resposta
         response_data = {'success': 'Imagem carregada com sucesso',
-                        'images': [{'result': res.tolist(), 'original': img.tolist()} for res, img in images]}
+                        'images': base64_images}
         
         return jsonify(response_data)
-    
+
     else:
         return jsonify({'error': 'Tipos de imagem permitidos são - png, jpg, jpeg, gif'})
-
-

@@ -1,5 +1,6 @@
 import cv2 as cv
 import numpy as np
+from matplotlib import pyplot as plt
 
 def find_testtube(arquivo):
     img = cv.imread(arquivo, cv.IMREAD_COLOR)
@@ -38,5 +39,4 @@ def find_testtube(arquivo):
         # Armazenar a imagem resultante e a imagem original com o retângulo desenhado
         images.append((res, cv.cvtColor(new_img2, cv.COLOR_BGR2RGB)))
     
-    # Retornar a lista de imagens
     return images
